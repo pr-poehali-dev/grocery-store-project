@@ -20,20 +20,25 @@ export const CATEGORIES = [
   { id: 'snacks', name: 'Снэки и сладости', emoji: '🍫' },
 ];
 
-// Реальные фото с Wikimedia Commons (открытая лицензия)
+const CDN = 'https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files';
+
 const IMG = {
-  cola: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Coca-Cola_bottle.jpg/400px-Coca-Cola_bottle.jpg',
-  sprite: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Sprite_%28drink%29.jpg/400px-Sprite_%28drink%29.jpg',
-  fanta: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Fanta_Orange.jpg/400px-Fanta_Orange.jpg',
-  beef: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Beef_steak.jpg/400px-Beef_steak.jpg',
-  pork: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Pork_chop.jpg/400px-Pork_chop.jpg',
-  milk: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Milk_glass.jpg/400px-Milk_glass.jpg',
-  kefir: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Kefir.jpg/400px-Kefir.jpg',
-  cheese: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Cheese.jpg/400px-Cheese.jpg',
-  tomatoes: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Tomatoes.jpg/400px-Tomatoes.jpg',
-  cucumbers: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Cucumbers.jpg/400px-Cucumbers.jpg',
-  potato: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Potato.jpg/400px-Potato.jpg',
-  carrots: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Carrots.jpg/400px-Carrots.jpg',
+  cola:     `${CDN}/b42d4339-a270-4c0c-b9b6-06b54f3e4a56.jpg`,
+  sprite:   `${CDN}/b06ec84a-2e17-43b2-b843-b982472c0f02.jpg`,
+  fanta:    `${CDN}/bc182be2-ea5b-43f5-90ea-255b7b1798dc.jpg`,
+  pepsi:    `${CDN}/531be459-0b95-4a6f-94c8-85f5ce4935d3.jpg`,
+  chicken:  `${CDN}/74edd2f1-e11b-4772-bb2d-bf7ef81222ba.jpg`,
+  beef:     `${CDN}/fa2f5ea9-04ed-4cd3-a954-fc14a5f7f033.jpg`,
+  pork:     `${CDN}/ebbd5303-9b04-4848-b496-d56850da7efa.jpg`,
+  milk:     `${CDN}/d267b2e8-7225-4d38-bf6e-ee3f879fee35.jpg`,
+  cheese:   `${CDN}/4f6e38b1-b7f8-4f5e-8717-abf790062735.jpg`,
+  tomatoes: `${CDN}/9fe1a797-afb9-48a8-9eaa-c091de0017a2.jpg`,
+  cucumbers:`${CDN}/13d5cbd9-6b08-4fb0-b036-6b59e37fecd5.jpg`,
+  potato:   `${CDN}/2cd9dca5-893d-4f46-9aa9-1aa98ce0cab7.jpg`,
+  carrots:  `${CDN}/8505cd6e-2b2b-4e9b-83ef-568186cb3f8e.jpg`,
+  bananas:  `${CDN}/16cfcb83-f548-46b9-9d15-7feae80ab0f4.jpg`,
+  chips:    `${CDN}/2a0ba0d1-7997-4429-8043-d20f8566941b.jpg`,
+  milka:    `${CDN}/24a3f5ca-3768-4406-b42c-476f3c0a5e1c.jpg`,
 };
 
 export const PRODUCTS: Product[] = [
@@ -99,7 +104,7 @@ export const PRODUCTS: Product[] = [
     price: 85,
     unit: '0.5 л',
     description: 'Pepsi — освежающий газированный напиток с фирменным вкусом.',
-    image: IMG.cola,
+    image: IMG.pepsi,
     inStock: true,
   },
   {
@@ -109,7 +114,7 @@ export const PRODUCTS: Product[] = [
     price: 139,
     unit: '1.5 л',
     description: 'Большая бутылка Pepsi для дома и компании.',
-    image: IMG.cola,
+    image: IMG.pepsi,
     inStock: true,
   },
 
@@ -121,7 +126,7 @@ export const PRODUCTS: Product[] = [
     price: 320,
     unit: '1 кг',
     description: 'Охлаждённое куриное филе без кожи и костей. Отличный источник белка.',
-    image: IMG.beef,
+    image: IMG.chicken,
     badge: 'Свежее',
     inStock: true,
   },
@@ -132,7 +137,7 @@ export const PRODUCTS: Product[] = [
     price: 240,
     unit: '1 кг',
     description: 'Сочные куриные бёдра на кости. Идеально для запекания и гриля.',
-    image: IMG.beef,
+    image: IMG.chicken,
     inStock: true,
   },
   {
@@ -142,7 +147,7 @@ export const PRODUCTS: Product[] = [
     price: 210,
     unit: '1 кг',
     description: 'Куриные крылышки — отличная закуска для компании.',
-    image: IMG.beef,
+    image: IMG.chicken,
     inStock: true,
   },
   {
@@ -152,7 +157,7 @@ export const PRODUCTS: Product[] = [
     price: 270,
     unit: '500 г',
     description: 'Свежий куриный фарш из филе без добавок. Для котлет, тефтелей.',
-    image: IMG.beef,
+    image: IMG.chicken,
     inStock: true,
   },
   {
@@ -302,7 +307,7 @@ export const PRODUCTS: Product[] = [
     oldPrice: 120,
     unit: '1 кг',
     description: 'Спелые бананы, богатые калием и природной энергией.',
-    image: IMG.tomatoes,
+    image: IMG.bananas,
     badge: 'Скидка',
     inStock: true,
   },
@@ -315,7 +320,7 @@ export const PRODUCTS: Product[] = [
     price: 115,
     unit: '140 г',
     description: 'Хрустящие чипсы с насыщенным вкусом краба.',
-    image: IMG.potato,
+    image: IMG.chips,
     inStock: true,
   },
   {
@@ -325,7 +330,7 @@ export const PRODUCTS: Product[] = [
     price: 115,
     unit: '140 г',
     description: 'Хрустящие чипсы со вкусом сметаны и зелёного лука.',
-    image: IMG.potato,
+    image: IMG.chips,
     inStock: true,
   },
   {
@@ -336,7 +341,7 @@ export const PRODUCTS: Product[] = [
     oldPrice: 160,
     unit: '100 г',
     description: 'Нежный молочный шоколад с альпийским молоком.',
-    image: IMG.cheese,
+    image: IMG.milka,
     badge: 'Скидка',
     inStock: true,
   },
