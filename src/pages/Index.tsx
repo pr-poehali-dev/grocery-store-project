@@ -6,7 +6,7 @@ import ProductCard from '@/components/ProductCard';
 import Icon from '@/components/ui/icon';
 import { PRODUCTS, CATEGORIES } from '@/data/products';
 
-const HERO_IMG = 'https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/e6cafe4d-9d6b-4417-b625-4a084741d98b.jpg';
+const HERO_IMG = 'https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/57253f54-6543-4adb-be57-91bcf3fa80f2.jpg';
 
 export default function Index() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -75,20 +75,29 @@ export default function Index() {
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-red-100 aspect-square flex flex-col">
                 <img src={HERO_IMG} alt="Свежие продукты" className="w-full h-full object-cover absolute inset-0" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                <div className="relative mt-auto p-8 text-center">
-                  <p className="text-white" style={{
-                    fontSize: '3.2rem',
+                <div className="relative mt-auto p-8 text-center select-none">
+                  <p style={{
+                    fontSize: '3.4rem',
                     fontWeight: 900,
-                    lineHeight: 1.1,
-                    fontFamily: 'Impact, "Arial Black", Arial, sans-serif',
-                    textShadow: '2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000',
+                    lineHeight: 1.05,
+                    color: '#ffffff',
+                    fontFamily: '"Arial Black", "Arial Bold", Gadget, sans-serif',
+                    textShadow: '0 0 30px rgba(0,0,0,0.9), 0 3px 6px rgba(0,0,0,0.9)',
+                    WebkitTextStroke: '1px rgba(255,255,255,0.3)',
                   }}>
-                    ВКУС ЖИЗНИ
+                    Вкус Жизни
                   </p>
                   <div className="flex items-center justify-center gap-3 mt-3">
-                    <div className="h-0.5 w-10 bg-brand-red" />
-                    <p className="text-white/90 text-xs font-bold tracking-[0.3em] uppercase">Свежие продукты</p>
-                    <div className="h-0.5 w-10 bg-brand-red" />
+                    <div className="h-px w-12 bg-brand-red" />
+                    <p style={{
+                      color: 'rgba(255,255,255,0.85)',
+                      fontSize: '0.75rem',
+                      letterSpacing: '0.3em',
+                      fontFamily: 'Arial, sans-serif',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                    }}>Свежие продукты</p>
+                    <div className="h-px w-12 bg-brand-red" />
                   </div>
                 </div>
               </div>
