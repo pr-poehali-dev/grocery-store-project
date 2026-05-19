@@ -72,33 +72,23 @@ export default function Index() {
             </div>
 
             <div className="relative animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-red-100">
-                <img src={HERO_IMG} alt="Свежие продукты" className="w-full object-cover aspect-square" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
-                  <div style={{
-                    fontSize: '3.5rem',
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-red-100 aspect-square flex flex-col">
+                <img src={HERO_IMG} alt="Свежие продукты" className="w-full h-full object-cover absolute inset-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                <div className="relative mt-auto p-8 text-center">
+                  <p className="text-white" style={{
+                    fontSize: '3.2rem',
                     fontWeight: 900,
-                    color: '#ffffff',
                     lineHeight: 1.1,
-                    textShadow: '0 2px 20px rgba(0,0,0,1)',
-                    fontFamily: 'Georgia, "Times New Roman", serif',
-                    letterSpacing: '1px',
+                    fontFamily: 'Impact, "Arial Black", Arial, sans-serif',
+                    textShadow: '2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000',
                   }}>
-                    Вкус жизни
-                  </div>
+                    ВКУС ЖИЗНИ
+                  </p>
                   <div className="flex items-center justify-center gap-3 mt-3">
-                    <div style={{ height: 2, width: 40, background: '#E31E24', borderRadius: 2 }} />
-                    <span style={{
-                      color: 'rgba(255,255,255,0.9)',
-                      fontSize: '0.8rem',
-                      letterSpacing: '0.25em',
-                      fontFamily: 'Georgia, serif',
-                      textTransform: 'uppercase',
-                    }}>
-                      Свежие продукты
-                    </span>
-                    <div style={{ height: 2, width: 40, background: '#E31E24', borderRadius: 2 }} />
+                    <div className="h-0.5 w-10 bg-brand-red" />
+                    <p className="text-white/90 text-xs font-bold tracking-[0.3em] uppercase">Свежие продукты</p>
+                    <div className="h-0.5 w-10 bg-brand-red" />
                   </div>
                 </div>
               </div>
