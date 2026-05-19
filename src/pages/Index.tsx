@@ -35,9 +35,9 @@ export default function Index() {
                 Доставка за 2 часа
               </div>
               <div className="mb-3">
-                <span className="font-montserrat font-black text-5xl lg:text-7xl text-brand-red tracking-tight">Вкус жизни</span>
+                <span className="font-black text-brand-red tracking-tight" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', fontFamily: 'Arial Black, Arial, sans-serif' }}>Вкус жизни</span>
               </div>
-              <h1 className="font-montserrat font-black text-2xl lg:text-3xl text-gray-700 leading-tight mb-6">
+              <h1 className="font-black text-2xl lg:text-3xl text-gray-700 leading-tight mb-6" style={{ fontFamily: 'Arial Black, Arial, sans-serif' }}>
                 Свежие продукты —<br />
                 <span className="text-gray-900">с доставкой на дом</span>
               </h1>
@@ -76,20 +76,20 @@ export default function Index() {
                 <img src={HERO_IMG} alt="Свежие продукты" className="w-full object-cover aspect-square" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 px-6 text-center">
-                  <p className="text-white leading-none drop-shadow-2xl"
+                  <p className="text-white leading-none"
                     style={{
                       fontSize: 'clamp(2.8rem, 8vw, 5rem)',
-                      fontFamily: "'Montserrat', 'PT Sans', 'Arial Black', Arial, sans-serif",
+                      fontFamily: '"Arial Black", "Arial Bold", Arial, sans-serif',
                       fontWeight: 900,
-                      textShadow: '0 4px 32px rgba(0,0,0,0.8)',
-                      letterSpacing: '-0.5px',
+                      textShadow: '0 2px 4px rgba(0,0,0,0.9), 0 8px 32px rgba(0,0,0,0.7)',
+                      letterSpacing: '-1px',
                     }}>
                     Вкус жизни
                   </p>
                   <div className="mt-3 flex items-center gap-3">
                     <div className="h-0.5 w-12 bg-brand-red rounded-full"></div>
                     <p className="text-white/90 text-sm font-semibold tracking-[0.2em] uppercase"
-                      style={{ fontFamily: "'Golos Text', Arial, sans-serif" }}>
+                      style={{ fontFamily: 'Arial, sans-serif' }}>
                       Свежие продукты
                     </p>
                     <div className="h-0.5 w-12 bg-brand-red rounded-full"></div>
