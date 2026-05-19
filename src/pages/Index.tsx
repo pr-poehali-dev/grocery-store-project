@@ -76,14 +76,23 @@ export default function Index() {
                 <img src={HERO_IMG} alt="Свежие продукты" className="w-full object-cover aspect-square" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 px-6 text-center">
-                  <p className="font-montserrat font-black text-white leading-none drop-shadow-2xl"
-                    style={{ fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', textShadow: '0 4px 24px rgba(0,0,0,0.7)' }}>
+                  <p className="text-white leading-none drop-shadow-2xl"
+                    style={{
+                      fontSize: 'clamp(2.8rem, 8vw, 5rem)',
+                      fontFamily: "'Montserrat', 'PT Sans', 'Arial Black', Arial, sans-serif",
+                      fontWeight: 900,
+                      textShadow: '0 4px 32px rgba(0,0,0,0.8)',
+                      letterSpacing: '-0.5px',
+                    }}>
                     Вкус жизни
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
-                    <div className="h-px w-10 bg-brand-red"></div>
-                    <p className="text-white/90 text-base font-semibold tracking-widest uppercase">Свежие продукты</p>
-                    <div className="h-px w-10 bg-brand-red"></div>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="h-0.5 w-12 bg-brand-red rounded-full"></div>
+                    <p className="text-white/90 text-sm font-semibold tracking-[0.2em] uppercase"
+                      style={{ fontFamily: "'Golos Text', Arial, sans-serif" }}>
+                      Свежие продукты
+                    </p>
+                    <div className="h-0.5 w-12 bg-brand-red rounded-full"></div>
                   </div>
                 </div>
               </div>
