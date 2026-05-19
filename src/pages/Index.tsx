@@ -74,7 +74,33 @@ export default function Index() {
             <div className="relative animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-red-100">
                 <img src={HERO_IMG} alt="Свежие продукты" className="w-full object-cover aspect-square" />
-
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 text-center">
+                  <div style={{
+                    fontSize: '3.5rem',
+                    fontWeight: 900,
+                    color: '#ffffff',
+                    lineHeight: 1.1,
+                    textShadow: '0 2px 20px rgba(0,0,0,1)',
+                    fontFamily: 'Georgia, "Times New Roman", serif',
+                    letterSpacing: '1px',
+                  }}>
+                    Вкус жизни
+                  </div>
+                  <div className="flex items-center justify-center gap-3 mt-3">
+                    <div style={{ height: 2, width: 40, background: '#E31E24', borderRadius: 2 }} />
+                    <span style={{
+                      color: 'rgba(255,255,255,0.9)',
+                      fontSize: '0.8rem',
+                      letterSpacing: '0.25em',
+                      fontFamily: 'Georgia, serif',
+                      textTransform: 'uppercase',
+                    }}>
+                      Свежие продукты
+                    </span>
+                    <div style={{ height: 2, width: 40, background: '#E31E24', borderRadius: 2 }} />
+                  </div>
+                </div>
               </div>
               <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 animate-scale-in" style={{ animationDelay: '0.5s' }}>
                 <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
