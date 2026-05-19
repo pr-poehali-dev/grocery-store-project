@@ -34,9 +34,12 @@ export default function Index() {
                 <span className="w-2 h-2 bg-brand-red rounded-full animate-pulse"></span>
                 Доставка за 2 часа
               </div>
-              <h1 className="font-montserrat font-black text-4xl lg:text-6xl text-gray-900 leading-tight mb-6">
+              <div className="mb-3">
+                <span className="font-montserrat font-black text-5xl lg:text-7xl text-brand-red tracking-tight">Вкус жизни</span>
+              </div>
+              <h1 className="font-montserrat font-black text-2xl lg:text-3xl text-gray-700 leading-tight mb-6">
                 Свежие продукты —<br />
-                <span className="text-brand-red">прямо домой</span>
+                <span className="text-gray-900">с доставкой на дом</span>
               </h1>
               <p className="text-gray-500 text-lg leading-relaxed mb-8 max-w-lg">
                 Большой выбор качественных продуктов с доставкой по городу. Работаем с лучшими поставщиками.
@@ -71,7 +74,13 @@ export default function Index() {
             <div className="relative animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-red-100">
                 <img src={HERO_IMG} alt="Свежие продукты" className="w-full object-cover aspect-square" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <p className="font-montserrat font-black text-3xl text-white leading-tight drop-shadow-lg">
+                    Вкус жизни
+                  </p>
+                  <p className="text-white/80 text-sm mt-1 font-medium">Свежие продукты каждый день</p>
+                </div>
               </div>
               <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 animate-scale-in" style={{ animationDelay: '0.5s' }}>
                 <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">

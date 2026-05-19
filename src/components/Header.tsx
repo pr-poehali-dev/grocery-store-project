@@ -17,7 +17,7 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
             <img
-              src="https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/8f2cc82e-6b1d-4f5c-abed-ba35fa154fcc.jpg"
+              src="https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/eed4de15-cd54-4b0e-b943-d63a97190821.jpg"
               alt="Вкус жизни"
               className="w-10 h-10 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform"
             />
