@@ -12,12 +12,13 @@ export default function ProductCard({ product }: Props) {
   const cartItem = items.find(i => i.product.id === product.id);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover-lift group">
-      <Link to={`/product/${product.id}`} className="block relative overflow-hidden aspect-square bg-white">
+    <div className="bg-white rounded-2xl border border-gray-100 hover-lift group overflow-hidden">
+      <Link to={`/product/${product.id}`} className="block relative aspect-square bg-gray-50 flex items-center justify-center" style={{ display: 'flex' }}>
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }}
+          className="group-hover:scale-105 transition-transform duration-300"
         />
         {product.badge && (
           <span className={`absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full ${
