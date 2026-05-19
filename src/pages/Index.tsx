@@ -74,12 +74,17 @@ export default function Index() {
             <div className="relative animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-red-100">
                 <img src={HERO_IMG} alt="Свежие продукты" className="w-full object-cover aspect-square" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <p className="font-montserrat font-black text-3xl text-white leading-tight drop-shadow-lg">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 px-6 text-center">
+                  <p className="font-montserrat font-black text-white leading-none drop-shadow-2xl"
+                    style={{ fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', textShadow: '0 4px 24px rgba(0,0,0,0.7)' }}>
                     Вкус жизни
                   </p>
-                  <p className="text-white/80 text-sm mt-1 font-medium">Свежие продукты каждый день</p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <div className="h-px w-10 bg-brand-red"></div>
+                    <p className="text-white/90 text-base font-semibold tracking-widest uppercase">Свежие продукты</p>
+                    <div className="h-px w-10 bg-brand-red"></div>
+                  </div>
                 </div>
               </div>
               <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 animate-scale-in" style={{ animationDelay: '0.5s' }}>
