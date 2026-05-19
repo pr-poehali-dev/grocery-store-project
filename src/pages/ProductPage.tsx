@@ -2,12 +2,13 @@ import { useParams, Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Icon from '@/components/ui/icon';
-import { PRODUCTS } from '@/data/products';
 import { useCart } from '@/context/CartContext';
+import { useProducts } from '@/context/ProductsContext';
 
 export default function ProductPage() {
   const { id } = useParams();
-  const product = PRODUCTS.find(p => p.id === id);
+  const { products } = useProducts();
+  const product = products.find(p => p.id === id);
   const { addToCart, items, updateQuantity } = useCart();
 
   if (!product) return (

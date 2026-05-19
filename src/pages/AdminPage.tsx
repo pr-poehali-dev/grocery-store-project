@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { useAuth } from '@/context/AuthContext';
-import { PRODUCTS, CATEGORIES, Product } from '@/data/products';
+import { CATEGORIES, Product } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 
 type AdminTab = 'orders' | 'products' | 'clients' | 'settings';
 type OrderStatus = 'new' | 'processing' | 'delivered' | 'cancelled';
@@ -108,15 +109,16 @@ const PAYMENT_LABELS: Record<string, string> = {
 
 export default function AdminPage() {
   const { user, isAdmin, logout } = useAuth();
+  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const navigate = useNavigate();
   const [tab, setTab] = useState<AdminTab>('orders');
   const [orders, setOrders] = useState<Order[]>(MOCK_ORDERS);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [clients, setClients] = useState(MOCK_CLIENTS);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [editClient, setEditClient] = useState<typeof MOCK_CLIENTS[0] | null>(null);
-  const [newProduct, setNewProduct] = useState({ name: '', category: 'drinks', price: '', unit: 'шт', description: '' });
+  const [newProduct, setNewProduct] = useState({ name: '', category: 'drinks', price: '', oldPrice: '', unit: 'шт', description: '', image: '', badge: '' });
   const [settings, setSettings] = useState({
     company: 'ООО «Вкус жизни»',
     inn: '7700000001',
@@ -140,20 +142,22 @@ export default function AdminPage() {
     </div>
   );
 
-  const addProduct = () => {
+  const handleAddProduct = () => {
     if (!newProduct.name || !newProduct.price) return;
     const p: Product = {
       id: Date.now().toString(),
       name: newProduct.name,
       category: newProduct.category,
       price: +newProduct.price,
+      oldPrice: newProduct.oldPrice ? +newProduct.oldPrice : undefined,
       unit: newProduct.unit,
       description: newProduct.description,
-      image: 'https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/57253f54-6543-4adb-be57-91bcf3fa80f2.jpg',
+      image: newProduct.image || 'https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/57253f54-6543-4adb-be57-91bcf3fa80f2.jpg',
+      badge: newProduct.badge || undefined,
       inStock: true,
     };
-    setProducts(prev => [p, ...prev]);
-    setNewProduct({ name: '', category: 'drinks', price: '', unit: 'шт', description: '' });
+    addProduct(p);
+    setNewProduct({ name: '', category: 'drinks', price: '', oldPrice: '', unit: 'шт', description: '', image: '', badge: '' });
     setShowAddProduct(false);
   };
 
@@ -460,81 +464,185 @@ export default function AdminPage() {
           })()}
 
           {/* ===== PRODUCTS ===== */}
-          {tab === 'products' && (
+          {tab === 'products' && !editingProduct && (
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h1 className="font-montserrat font-black text-2xl text-gray-900">Товары</h1>
+                <h1 className="font-montserrat font-black text-2xl text-gray-900">Товары <span className="text-gray-400 font-normal text-base">({products.length})</span></h1>
                 <button onClick={() => setShowAddProduct(true)} className="flex items-center gap-2 px-4 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark transition-all">
                   <Icon name="Plus" size={16} />Добавить товар
                 </button>
               </div>
 
+              {/* Форма добавления товара */}
               {showAddProduct && (
-                <div className="bg-white rounded-2xl border border-brand-red/20 p-6 mb-5 animate-fade-in">
+                <div className="bg-white rounded-2xl border border-brand-red/30 p-6 mb-5 animate-fade-in">
                   <h3 className="font-bold text-lg text-gray-900 mb-4">Новый товар</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    {[['name', 'Название', 'text', 'Название товара'], ['price', 'Цена, ₽', 'number', '99'], ['unit', 'Единица', 'text', '1 кг / 0.5 л / шт']].map(([key, label, type, placeholder]) => (
-                      <div key={key}>
-                        <label className="text-sm font-medium text-gray-700 mb-1.5 block">{label}</label>
-                        <input
-                          type={type}
-                          value={newProduct[key as keyof typeof newProduct]}
-                          onChange={e => setNewProduct(f => ({ ...f, [key]: e.target.value }))}
-                          placeholder={placeholder}
-                          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red"
-                        />
-                      </div>
-                    ))}
+                    <div className="sm:col-span-2">
+                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Название *</label>
+                      <input type="text" value={newProduct.name} onChange={e => setNewProduct(f => ({ ...f, name: e.target.value }))} placeholder="Coca-Cola Classic" className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Цена, ₽ *</label>
+                      <input type="number" value={newProduct.price} onChange={e => setNewProduct(f => ({ ...f, price: e.target.value }))} placeholder="89" className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Старая цена, ₽</label>
+                      <input type="number" value={newProduct.oldPrice} onChange={e => setNewProduct(f => ({ ...f, oldPrice: e.target.value }))} placeholder="120 (необязательно)" className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                    </div>
                     <div>
                       <label className="text-sm font-medium text-gray-700 mb-1.5 block">Категория</label>
                       <select value={newProduct.category} onChange={e => setNewProduct(f => ({ ...f, category: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red bg-white">
-                        {CATEGORIES.filter(c => c.id !== 'all').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        {CATEGORIES.filter(c => c.id !== 'all').map(c => <option key={c.id} value={c.id}>{c.emoji} {c.name}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Единица измерения</label>
+                      <input type="text" value={newProduct.unit} onChange={e => setNewProduct(f => ({ ...f, unit: e.target.value }))} placeholder="0.5 л / 1 кг / шт" className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Бейдж</label>
+                      <select value={newProduct.badge} onChange={e => setNewProduct(f => ({ ...f, badge: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red bg-white">
+                        <option value="">— нет —</option>
+                        <option value="Хит">Хит</option>
+                        <option value="Скидка">Скидка</option>
+                        <option value="Новинка">Новинка</option>
+                        <option value="Свежее">Свежее</option>
+                        <option value="Премиум">Премиум</option>
                       </select>
                     </div>
                     <div className="sm:col-span-2">
+                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Ссылка на фото (URL)</label>
+                      <input type="text" value={newProduct.image} onChange={e => setNewProduct(f => ({ ...f, image: e.target.value }))} placeholder="https://... (оставьте пустым для стандартного фото)" className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                    </div>
+                    <div className="sm:col-span-2">
                       <label className="text-sm font-medium text-gray-700 mb-1.5 block">Описание</label>
-                      <textarea value={newProduct.description} onChange={e => setNewProduct(f => ({ ...f, description: e.target.value }))} rows={2} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red resize-none" placeholder="Краткое описание" />
+                      <textarea value={newProduct.description} onChange={e => setNewProduct(f => ({ ...f, description: e.target.value }))} rows={2} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red resize-none" placeholder="Краткое описание товара" />
                     </div>
                   </div>
+                  {newProduct.image && (
+                    <div className="mb-4">
+                      <img src={newProduct.image} alt="preview" className="w-20 h-20 object-contain rounded-xl border border-gray-100 bg-gray-50" />
+                    </div>
+                  )}
                   <div className="flex gap-3">
-                    <button onClick={addProduct} className="px-5 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark">Добавить</button>
+                    <button onClick={handleAddProduct} className="px-5 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark">Добавить товар</button>
                     <button onClick={() => setShowAddProduct(false)} className="px-5 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-xl">Отмена</button>
                   </div>
                 </div>
               )}
 
+              {/* Таблица товаров */}
               <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-gray-100 bg-gray-50">
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Товар</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Категория</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Цена</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Ед.</th>
-                      <th className="px-5 py-3"></th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Товар</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">Категория</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Цена</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">Ед.</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Действия</th>
                     </tr>
                   </thead>
                   <tbody>
                     {products.map(p => (
                       <tr key={p.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-3">
+                        <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
-                            <img src={p.image} alt={p.name} className="w-10 h-10 rounded-lg object-cover bg-gray-100" />
-                            <span className="font-medium text-gray-900">{p.name}</span>
+                            <img src={p.image} alt={p.name} className="w-12 h-12 rounded-xl object-contain bg-white border border-gray-100 p-1 shrink-0" />
+                            <div>
+                              <div className="font-medium text-gray-900">{p.name}</div>
+                              {p.badge && <span className="text-xs bg-brand-red/10 text-brand-red px-2 py-0.5 rounded-full">{p.badge}</span>}
+                            </div>
                           </div>
                         </td>
-                        <td className="px-5 py-3 text-gray-500">{CATEGORIES.find(c => c.id === p.category)?.name}</td>
-                        <td className="px-5 py-3 font-semibold text-gray-900">{p.price} ₽</td>
-                        <td className="px-5 py-3 text-gray-400">{p.unit}</td>
-                        <td className="px-5 py-3">
-                          <button onClick={() => setProducts(prev => prev.filter(pp => pp.id !== p.id))} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 hover:text-brand-red text-gray-400 transition-all">
-                            <Icon name="Trash2" size={14} />
-                          </button>
+                        <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{CATEGORIES.find(c => c.id === p.category)?.name}</td>
+                        <td className="px-4 py-3">
+                          <div className="font-semibold text-gray-900">{p.price} ₽</div>
+                          {p.oldPrice && <div className="text-xs text-gray-400 line-through">{p.oldPrice} ₽</div>}
+                        </td>
+                        <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{p.unit}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-1 justify-end">
+                            <button onClick={() => setEditingProduct({ ...p })} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-all" title="Редактировать">
+                              <Icon name="Pencil" size={14} />
+                            </button>
+                            <button onClick={() => deleteProduct(p.id)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 hover:text-brand-red text-gray-400 transition-all" title="Удалить">
+                              <Icon name="Trash2" size={14} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+
+          {/* ===== PRODUCT EDIT ===== */}
+          {tab === 'products' && editingProduct && (
+            <div>
+              <button onClick={() => setEditingProduct(null)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-brand-red mb-5 transition-colors">
+                <Icon name="ArrowLeft" size={16} />Назад к товарам
+              </button>
+              <h1 className="font-montserrat font-black text-2xl text-gray-900 mb-6">Редактировать товар</h1>
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div className="sm:col-span-2">
+                    <label className="text-sm font-medium text-gray-700 mb-1.5 block">Название</label>
+                    <input type="text" value={editingProduct.name} onChange={e => setEditingProduct(p => p ? { ...p, name: e.target.value } : p)} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1.5 block">Цена, ₽</label>
+                    <input type="number" value={editingProduct.price} onChange={e => setEditingProduct(p => p ? { ...p, price: +e.target.value } : p)} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1.5 block">Старая цена, ₽</label>
+                    <input type="number" value={editingProduct.oldPrice || ''} onChange={e => setEditingProduct(p => p ? { ...p, oldPrice: e.target.value ? +e.target.value : undefined } : p)} placeholder="Необязательно" className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1.5 block">Категория</label>
+                    <select value={editingProduct.category} onChange={e => setEditingProduct(p => p ? { ...p, category: e.target.value } : p)} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red bg-white">
+                      {CATEGORIES.filter(c => c.id !== 'all').map(c => <option key={c.id} value={c.id}>{c.emoji} {c.name}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1.5 block">Единица</label>
+                    <input type="text" value={editingProduct.unit} onChange={e => setEditingProduct(p => p ? { ...p, unit: e.target.value } : p)} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1.5 block">Бейдж</label>
+                    <select value={editingProduct.badge || ''} onChange={e => setEditingProduct(p => p ? { ...p, badge: e.target.value || undefined } : p)} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red bg-white">
+                      <option value="">— нет —</option>
+                      <option value="Хит">Хит</option>
+                      <option value="Скидка">Скидка</option>
+                      <option value="Новинка">Новинка</option>
+                      <option value="Свежее">Свежее</option>
+                      <option value="Премиум">Премиум</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="text-sm font-medium text-gray-700 mb-1.5 block">Ссылка на фото (URL)</label>
+                    <input type="text" value={editingProduct.image} onChange={e => setEditingProduct(p => p ? { ...p, image: e.target.value } : p)} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red" />
+                    {editingProduct.image && (
+                      <img src={editingProduct.image} alt="preview" className="mt-3 w-24 h-24 object-contain rounded-xl border border-gray-100 bg-white p-1" />
+                    )}
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="text-sm font-medium text-gray-700 mb-1.5 block">Описание</label>
+                    <textarea value={editingProduct.description} onChange={e => setEditingProduct(p => p ? { ...p, description: e.target.value } : p)} rows={3} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red resize-none" />
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={() => { updateProduct(editingProduct); setEditingProduct(null); }}
+                    className="px-6 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark transition-all"
+                  >
+                    Сохранить изменения
+                  </button>
+                  <button onClick={() => setEditingProduct(null)} className="px-5 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-xl">Отмена</button>
+                </div>
               </div>
             </div>
           )}

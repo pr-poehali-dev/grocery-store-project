@@ -13,6 +13,7 @@ import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import { ProductsProvider } from "./context/ProductsContext";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
+        <ProductsProvider>
         <CartProvider>
           <Toaster />
           <Sonner />
@@ -36,6 +38,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </CartProvider>
+        </ProductsProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>

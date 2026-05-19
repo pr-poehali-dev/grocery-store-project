@@ -3,16 +3,18 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import Icon from '@/components/ui/icon';
-import { PRODUCTS, CATEGORIES } from '@/data/products';
+import { CATEGORIES } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 
 export default function CatalogPage() {
+  const { products } = useProducts();
   const [activeCategory, setActiveCategory] = useState('all');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
   const [sortBy, setSortBy] = useState('default');
   const [search, setSearch] = useState('');
 
   const filtered = useMemo(() => {
-    let list = PRODUCTS;
+    let list = products;
     if (activeCategory !== 'all') list = list.filter(p => p.category === activeCategory);
     list = list.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
     if (search) list = list.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
@@ -57,7 +59,7 @@ export default function CatalogPage() {
                       <span>{cat.emoji}</span>
                       {cat.name}
                       <span className="ml-auto text-xs text-gray-400">
-                        {cat.id === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.category === cat.id).length}
+                        {cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length}
                       </span>
                     </button>
                   ))}

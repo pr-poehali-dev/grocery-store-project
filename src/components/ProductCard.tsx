@@ -13,11 +13,11 @@ export default function ProductCard({ product }: Props) {
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover-lift group">
-      <Link to={`/product/${product.id}`} className="block relative overflow-hidden aspect-square bg-gray-50">
+      <Link to={`/product/${product.id}`} className="block relative overflow-hidden aspect-square bg-white">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
         />
         {product.badge && (
           <span className={`absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full ${

@@ -4,17 +4,19 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import Icon from '@/components/ui/icon';
-import { PRODUCTS, CATEGORIES } from '@/data/products';
+import { CATEGORIES } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 
 const HERO_IMG = 'https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/57253f54-6543-4adb-be57-91bcf3fa80f2.jpg';
 
 export default function Index() {
+  const { products } = useProducts();
   const [activeCategory, setActiveCategory] = useState('all');
   const [callbackForm, setCallbackForm] = useState({ name: '', phone: '', sent: false });
 
   const filtered = activeCategory === 'all'
-    ? PRODUCTS.slice(0, 8)
-    : PRODUCTS.filter(p => p.category === activeCategory).slice(0, 8);
+    ? products.slice(0, 8)
+    : products.filter(p => p.category === activeCategory).slice(0, 8);
 
   const handleCallback = (e: React.FormEvent) => {
     e.preventDefault();
