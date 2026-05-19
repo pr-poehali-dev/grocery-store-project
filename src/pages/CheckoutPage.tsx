@@ -8,6 +8,8 @@ import { useCart } from '@/context/CartContext';
 type PayMethod = 'card' | 'sbp' | 'invoice' | 'cash';
 type DeliveryMethod = 'delivery' | 'pickup';
 
+const SEND_ORDER_URL = 'https://functions.poehali.dev/3d489bcb-9117-4c24-9e28-153a87f3c580';
+
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCart();
   const navigate = useNavigate();
@@ -15,9 +17,29 @@ export default function CheckoutPage() {
   const [payMethod, setPayMethod] = useState<PayMethod>('card');
   const [delivery, setDelivery] = useState<DeliveryMethod>('delivery');
   const [form, setForm] = useState({ name: '', phone: '', email: '', address: '', comment: '' });
+  const [orderId] = useState(() => 'VZH-' + Date.now().toString().slice(-6));
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const sendOrder = async () => {
+    try {
+      await fetch(SEND_ORDER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          order: { id: orderId, ...form, delivery, payment: payMethod, total },
+          items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price })),
+        }),
+      });
+    } catch (_) {
+      // письма не критичны, продолжаем
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    await sendOrder();
+    setLoading(false);
     if (payMethod === 'invoice') {
       setStep('invoice');
     } else {
@@ -164,7 +186,7 @@ export default function CheckoutPage() {
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
-                      <Icon name={opt.icon as any} size={20} className={delivery === opt.value ? 'text-brand-red' : 'text-gray-400'} />
+                      <Icon name={opt.icon} fallback="Circle" size={20} className={delivery === opt.value ? 'text-brand-red' : 'text-gray-400'} />
                       <span className={`text-sm font-medium ${delivery === opt.value ? 'text-brand-red' : 'text-gray-700'}`}>{opt.label}</span>
                     </button>
                   ))}
@@ -210,7 +232,7 @@ export default function CheckoutPage() {
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
-                      <Icon name={opt.icon as any} size={18} className={payMethod === opt.value ? 'text-brand-red' : 'text-gray-400'} />
+                      <Icon name={opt.icon} fallback="Circle" size={18} className={payMethod === opt.value ? 'text-brand-red' : 'text-gray-400'} />
                       <span className={`text-sm font-medium ${payMethod === opt.value ? 'text-brand-red' : 'text-gray-700'}`}>{opt.label}</span>
                     </button>
                   ))}
@@ -260,9 +282,11 @@ export default function CheckoutPage() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-4 bg-brand-red text-white font-semibold rounded-xl hover:bg-brand-red-dark transition-all shadow-lg shadow-red-200"
+                  disabled={loading}
+                  className="w-full py-4 bg-brand-red text-white font-semibold rounded-xl hover:bg-brand-red-dark transition-all shadow-lg shadow-red-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {payMethod === 'invoice' ? 'Получить счёт' : 'Оформить заказ'}
+                  {loading && <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
+                  {loading ? 'Отправляем...' : payMethod === 'invoice' ? 'Получить счёт' : 'Оформить заказ'}
                 </button>
                 <p className="text-xs text-gray-400 text-center mt-3">
                   Нажимая кнопку, вы соглашаетесь с условиями оферты

@@ -1,0 +1,35 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Send order notification",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "order": {
+          "id": "VZH-999999",
+          "name": "Тест Тестов",
+          "phone": "+7 900 000-00-00",
+          "email": "",
+          "delivery": "delivery",
+          "address": "ул. Тестовая, 1",
+          "payment": "card",
+          "comment": "Тест",
+          "total": 500
+        },
+        "items": [
+          {"name": "Coca-Cola", "quantity": 2, "price": 89},
+          {"name": "Молоко", "quantity": 1, "price": 95}
+        ]
+      },
+      "expectedStatus": 200,
+      "expectedBody": {"ok": true},
+      "bodyMatcher": "partial"
+    }
+  ]
+}
