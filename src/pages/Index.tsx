@@ -6,7 +6,7 @@ import ProductCard from '@/components/ProductCard';
 import Icon from '@/components/ui/icon';
 import { PRODUCTS, CATEGORIES } from '@/data/products';
 
-const HERO_IMG = 'https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/0b693aee-07b3-44b9-aea1-e25ffa5d4aea.jpg';
+const HERO_IMG = 'https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/e6cafe4d-9d6b-4417-b625-4a084741d98b.jpg';
 
 export default function Index() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -74,27 +74,7 @@ export default function Index() {
             <div className="relative animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-red-100">
                 <img src={HERO_IMG} alt="Свежие продукты" className="w-full object-cover aspect-square" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 px-6 text-center">
-                  <p className="text-white leading-none"
-                    style={{
-                      fontSize: 'clamp(2.8rem, 8vw, 5rem)',
-                      fontFamily: '"Arial Black", "Arial Bold", Arial, sans-serif',
-                      fontWeight: 900,
-                      textShadow: '0 2px 4px rgba(0,0,0,0.9), 0 8px 32px rgba(0,0,0,0.7)',
-                      letterSpacing: '-1px',
-                    }}>
-                    Вкус жизни
-                  </p>
-                  <div className="mt-3 flex items-center gap-3">
-                    <div className="h-0.5 w-12 bg-brand-red rounded-full"></div>
-                    <p className="text-white/90 text-sm font-semibold tracking-[0.2em] uppercase"
-                      style={{ fontFamily: 'Arial, sans-serif' }}>
-                      Свежие продукты
-                    </p>
-                    <div className="h-0.5 w-12 bg-brand-red rounded-full"></div>
-                  </div>
-                </div>
+
               </div>
               <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 animate-scale-in" style={{ animationDelay: '0.5s' }}>
                 <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
