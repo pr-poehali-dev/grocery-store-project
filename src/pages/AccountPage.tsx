@@ -29,7 +29,12 @@ export default function AccountPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const ok = login(loginForm.email, loginForm.password);
-    if (!ok) setLoginForm(f => ({ ...f, error: 'Неверный email или пароль' }));
+    if (ok) {
+      const isAdmin = loginForm.email === 'admin@vkuszhizni.ru';
+      navigate(isAdmin ? '/admin' : '/account');
+    } else {
+      setLoginForm(f => ({ ...f, error: 'Неверный email или пароль' }));
+    }
   };
 
   if (!user) return (
@@ -96,11 +101,7 @@ export default function AccountPage() {
             </button>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-gray-100">
-            <p className="text-xs text-gray-400 text-center mb-2">Демо-данные:</p>
-            <p className="text-xs text-gray-400 text-center">Клиент: ivan@example.com / 123456</p>
-            <p className="text-xs text-gray-400 text-center">Админ: admin@vkuszhizni.ru / admin123</p>
-          </div>
+
         </div>
       </div>
       <Footer />
