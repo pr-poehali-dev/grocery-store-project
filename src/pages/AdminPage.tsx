@@ -114,11 +114,16 @@ export default function AdminPage() {
   const [tab, setTab] = useState<AdminTab>('orders');
   const [orders, setOrders] = useState<Order[]>(MOCK_ORDERS);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showInvoice, setShowInvoice] = useState(false);
+  const [invoiceAmount, setInvoiceAmount] = useState('');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [clients, setClients] = useState(MOCK_CLIENTS);
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const [showAddClient, setShowAddClient] = useState(false);
   const [editClient, setEditClient] = useState<typeof MOCK_CLIENTS[0] | null>(null);
+  const [newClient, setNewClient] = useState({ name: '', email: '', phone: '', company: '', inn: '', address: '' });
   const [newProduct, setNewProduct] = useState({ name: '', category: 'drinks', price: '', oldPrice: '', unit: 'шт', description: '', image: '', badge: '' });
+  const [settingsSaved, setSettingsSaved] = useState(false);
   const [settings, setSettings] = useState({
     company: 'ООО «Вкус жизни»',
     inn: '7700000001',
@@ -159,6 +164,18 @@ export default function AdminPage() {
     addProduct(p);
     setNewProduct({ name: '', category: 'drinks', price: '', oldPrice: '', unit: 'шт', description: '', image: '', badge: '' });
     setShowAddProduct(false);
+  };
+
+  const handleAddClient = () => {
+    if (!newClient.name || !newClient.phone) return;
+    setClients(prev => [...prev, { ...newClient, id: Date.now().toString(), orders: 0 }]);
+    setNewClient({ name: '', email: '', phone: '', company: '', inn: '', address: '' });
+    setShowAddClient(false);
+  };
+
+  const saveSettings = () => {
+    setSettingsSaved(true);
+    setTimeout(() => setSettingsSaved(false), 2000);
   };
 
   const updateOrderStatus = (id: string, status: OrderStatus) => {
@@ -425,6 +442,71 @@ export default function AdminPage() {
                   </div>
                 </div>
 
+                {/* Invoice block */}
+                <div className="bg-white rounded-2xl border border-gray-100 mt-5 p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                      <Icon name="FileText" size={16} className="text-brand-red" />Счёт на оплату
+                    </h3>
+                    {!showInvoice && (
+                      <button onClick={() => { setShowInvoice(true); setInvoiceAmount(String(selectedOrder.total)); }} className="flex items-center gap-2 px-4 py-2 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark transition-all">
+                        <Icon name="FileText" size={14} />Выставить счёт
+                      </button>
+                    )}
+                  </div>
+                  {showInvoice && (
+                    <div className="animate-fade-in">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <label className="text-xs font-medium text-gray-500 mb-1 block">Сумма счёта, ₽</label>
+                          <input
+                            type="number"
+                            value={invoiceAmount}
+                            onChange={e => setInvoiceAmount(e.target.value)}
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red font-bold text-lg"
+                          />
+                        </div>
+                      </div>
+                      {/* Счёт */}
+                      <div className="border border-gray-200 rounded-2xl p-6 mb-4 print:block" id="invoice-print">
+                        <div className="flex justify-between items-start mb-6 pb-4 border-b border-gray-100">
+                          <div>
+                            <div className="font-montserrat font-black text-xl text-brand-red">Вкус жизни</div>
+                            <div className="text-gray-500 text-sm">{settings.company}</div>
+                            <div className="text-gray-400 text-xs mt-1">ИНН: {settings.inn} · БИК: {settings.bik}</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-gray-900">Счёт № {selectedOrder.id}</div>
+                            <div className="text-gray-400 text-sm">{new Date().toLocaleDateString('ru-RU')}</div>
+                          </div>
+                        </div>
+                        <div className="space-y-1 mb-4 text-sm">
+                          <div className="flex gap-2"><span className="text-gray-400 w-32">Банк:</span><span>{settings.bank}</span></div>
+                          <div className="flex gap-2"><span className="text-gray-400 w-32">Р/с:</span><span>{settings.account}</span></div>
+                          <div className="flex gap-2"><span className="text-gray-400 w-32">Получатель:</span><span>{selectedOrder.client}</span></div>
+                        </div>
+                        <div className="bg-brand-red rounded-xl p-4 flex justify-between items-center">
+                          <span className="text-white font-bold">ИТОГО К ОПЛАТЕ:</span>
+                          <span className="text-white font-montserrat font-black text-2xl">{Number(invoiceAmount).toLocaleString('ru')} ₽</span>
+                        </div>
+                        <div className="mt-4 bg-gray-50 rounded-xl p-4 text-center">
+                          <div className="text-xs text-gray-400 mb-2">QR-код для оплаты через СБП</div>
+                          <div className="w-24 h-24 bg-gray-200 rounded-lg mx-auto flex items-center justify-center">
+                            <span className="text-2xl">📱</span>
+                          </div>
+                          <div className="text-xs text-gray-400 mt-2">Заполните реквизиты в Настройках для генерации QR</div>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <button onClick={() => window.print()} className="flex items-center gap-2 px-5 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark transition-all">
+                          <Icon name="Printer" size={15} />Распечатать счёт
+                        </button>
+                        <button onClick={() => setShowInvoice(false)} className="px-5 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-xl">Закрыть</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* Full items table */}
                 <div className="bg-white rounded-2xl border border-gray-100 mt-5 overflow-hidden">
                   <div className="p-5 border-b border-gray-50">
@@ -650,7 +732,36 @@ export default function AdminPage() {
           {/* ===== CLIENTS ===== */}
           {tab === 'clients' && (
             <div>
-              <h1 className="font-montserrat font-black text-2xl text-gray-900 mb-6">База клиентов</h1>
+              <div className="flex items-center justify-between mb-6">
+                <h1 className="font-montserrat font-black text-2xl text-gray-900">Клиенты <span className="text-gray-400 font-normal text-base">({clients.length})</span></h1>
+                <button onClick={() => { setShowAddClient(true); setEditClient(null); }} className="flex items-center gap-2 px-4 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark transition-all">
+                  <Icon name="UserPlus" size={16} />Добавить клиента
+                </button>
+              </div>
+
+              {/* Форма добавления */}
+              {showAddClient && (
+                <div className="bg-white rounded-2xl border border-brand-red/30 p-6 mb-5 animate-fade-in">
+                  <h3 className="font-bold text-lg text-gray-900 mb-4">Новый клиент</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    {([['name','Имя / Название *'],['phone','Телефон *'],['email','Email'],['company','Компания'],['inn','ИНН'],['address','Адрес']] as [string,string][]).map(([key, label]) => (
+                      <div key={key}>
+                        <label className="text-sm font-medium text-gray-700 mb-1.5 block">{label}</label>
+                        <input
+                          value={newClient[key as keyof typeof newClient]}
+                          onChange={e => setNewClient(f => ({ ...f, [key]: e.target.value }))}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex gap-3">
+                    <button onClick={handleAddClient} className="px-5 py-2.5 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark">Добавить</button>
+                    <button onClick={() => setShowAddClient(false)} className="px-5 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-xl">Отмена</button>
+                  </div>
+                </div>
+              )}
+
               {editClient && (
                 <div className="bg-white rounded-2xl border border-brand-red/20 p-6 mb-5 animate-fade-in">
                   <h3 className="font-bold text-lg text-gray-900 mb-4">Редактировать клиента</h3>
@@ -695,12 +806,21 @@ export default function AdminPage() {
           {/* ===== SETTINGS ===== */}
           {tab === 'settings' && (
             <div>
-              <h1 className="font-montserrat font-black text-2xl text-gray-900 mb-6">Настройки магазина</h1>
+              <div className="flex items-center justify-between mb-6">
+                <h1 className="font-montserrat font-black text-2xl text-gray-900">Настройки магазина</h1>
+                <button
+                  onClick={saveSettings}
+                  className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl transition-all ${settingsSaved ? 'bg-green-500 text-white' : 'bg-brand-red text-white hover:bg-brand-red-dark'}`}
+                >
+                  <Icon name={settingsSaved ? 'Check' : 'Save'} size={15} />
+                  {settingsSaved ? 'Сохранено!' : 'Сохранить всё'}
+                </button>
+              </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white rounded-2xl border border-gray-100 p-6">
                   <h3 className="font-bold text-base text-gray-900 mb-4 flex items-center gap-2"><Icon name="Building2" size={16} className="text-brand-red" />Реквизиты для счёта</h3>
                   <div className="space-y-3">
-                    {[['company','Название компании'],['inn','ИНН'],['bik','БИК'],['bank','Банк'],['account','Расчётный счёт']].map(([key, label]) => (
+                    {([['company','Название компании'],['inn','ИНН'],['bik','БИК'],['bank','Банк'],['account','Расчётный счёт']] as [string,string][]).map(([key, label]) => (
                       <div key={key}>
                         <label className="text-xs font-medium text-gray-500 mb-1 block">{label}</label>
                         <input value={settings[key as keyof typeof settings]} onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-red" />
@@ -711,7 +831,7 @@ export default function AdminPage() {
                 <div className="bg-white rounded-2xl border border-gray-100 p-6">
                   <h3 className="font-bold text-base text-gray-900 mb-4 flex items-center gap-2"><Icon name="Globe" size={16} className="text-brand-red" />Контакты и футер</h3>
                   <div className="space-y-3">
-                    {[['email','Email'],['phone','Телефон'],['address','Адрес']].map(([key, label]) => (
+                    {([['email','Email'],['phone','Телефон'],['address','Адрес']] as [string,string][]).map(([key, label]) => (
                       <div key={key}>
                         <label className="text-xs font-medium text-gray-500 mb-1 block">{label}</label>
                         <input value={settings[key as keyof typeof settings]} onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-red" />
@@ -722,7 +842,6 @@ export default function AdminPage() {
                       <textarea value={settings.footerText} onChange={e => setSettings(s => ({ ...s, footerText: e.target.value }))} rows={3} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-red resize-none" />
                     </div>
                   </div>
-                  <button className="mt-4 w-full py-2.5 bg-brand-red text-white text-sm font-semibold rounded-xl hover:bg-brand-red-dark transition-all">Сохранить настройки</button>
                 </div>
                 <div className="bg-white rounded-2xl border border-gray-100 p-6 lg:col-span-2">
                   <h3 className="font-bold text-base text-gray-900 mb-4 flex items-center gap-2"><Icon name="QrCode" size={16} className="text-brand-red" />QR-код для оплаты (СБП)</h3>
