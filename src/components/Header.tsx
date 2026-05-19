@@ -15,10 +15,12 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 bg-brand-red rounded-lg flex items-center justify-center shadow-sm">
-              <span className="text-white font-montserrat font-black text-lg leading-none">ВЖ</span>
-            </div>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <img
+              src="https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/8f2cc82e-6b1d-4f5c-abed-ba35fa154fcc.jpg"
+              alt="Вкус жизни"
+              className="w-10 h-10 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform"
+            />
             <div className="hidden sm:block">
               <span className="font-montserrat font-black text-xl text-brand-red tracking-tight">Вкус</span>
               <span className="font-montserrat font-black text-xl text-gray-800 tracking-tight"> жизни</span>

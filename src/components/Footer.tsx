@@ -8,10 +8,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 bg-brand-red rounded-lg flex items-center justify-center">
-                <span className="text-white font-montserrat font-black text-lg">ВЖ</span>
-              </div>
+            <div className="flex items-center gap-2.5 mb-4">
+              <img
+                src="https://cdn.poehali.dev/projects/4823c780-127b-45da-8c8a-0a82a7bcb851/files/8f2cc82e-6b1d-4f5c-abed-ba35fa154fcc.jpg"
+                alt="Вкус жизни"
+                className="w-10 h-10 rounded-xl object-cover"
+              />
               <span className="font-montserrat font-black text-xl">Вкус жизни</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
